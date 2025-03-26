@@ -230,7 +230,6 @@ subroutine land_model_init (cplr2land, land2cplr, time_init, time, dt_fast, dt_s
   stdoutunit = stdout()
 
   call write_version_number (version, tagname)
-
 #ifndef LAND_GRID_FROM_ATMOS
   ! define the processor layout information according to the global grid size 
   call get_grid_ntiles('LND',ntiles)
@@ -276,21 +275,23 @@ subroutine land_model_init (cplr2land, land2cplr, time_init, time, dt_fast, dt_s
           'domain_in must be used if compiling with -DLAND_GRID_FROM_ATMOS', FATAL)
   endif
 #endif
-#ifndef LAND_GRID_FROM_ATMOS
-  npes_per_tile = mpp_npes()/ntiles
-  face = (mpp_pe()-mpp_root_pe())/npes_per_tile + 1
-  allocate(area(is:ie,js:je), cellarea(is:ie,js:je), frac(is:ie,js:je))
-  call get_grid_cell_area    ('LND',face,cellarea,domain)
-  call get_grid_comp_area    ('LND',face,area,domain)
-  frac = area/cellarea
-
+!#ifndef LAND_GRID_FROM_ATMOS
+!  npes_per_tile = mpp_npes()/ntiles
+!  face = (mpp_pe()-mpp_root_pe())/npes_per_tile + 1
+!  allocate(area(is:ie,js:je), cellarea(is:ie,js:je), frac(is:ie,js:je))
+!! ocean-ice models get a crash in the following calls with the nvhpc23.7 compiler
+!! Why is this block of code needed?
+!  call get_grid_cell_area    ('LND',face,cellarea,domain)
+!  call get_grid_comp_area    ('LND',face,area,domain)
+!  frac = area/cellarea
+!
+!  allocate(land2cplr%tile_size(is:ie,js:je,1))
+!  land2cplr%tile_size(is:ie,js:je,1) = frac(is:ie,js:je)
+!  deallocate(frac, area, cellarea)
+!#else
   allocate(land2cplr%tile_size(is:ie,js:je,1))
-  land2cplr%tile_size(is:ie,js:je,1) = frac(is:ie,js:je)
-  deallocate(frac, area, cellarea)
-#else
-  allocate(land2cplr%tile_size(is:ie,js:je,1))
-  land2cplr%tile_size(is:ie,js:je,1) = 0.0
-#endif
+  land2cplr%tile_size(is:ie,js:je,1) = 1.0 !Why was this 0.0?
+!#endif
 
 #ifndef LAND_GRID_FROM_ATMOS
   allocate(tile_ids(mpp_get_current_ntile(domain)))
