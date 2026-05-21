@@ -169,6 +169,7 @@ type :: land_data_type
 
    real, pointer, dimension(:,:) :: &  ! (lon, lat)
      discharge           => NULL(),  & ! liquid water flux from land to ocean
+     discharge_DOC       => NULL(),  & ! disolved organic carbon flux from land to ocean
      discharge_heat      => NULL(),  & ! sensible heat of discharge (0 C datum)
      discharge_snow      => NULL(),  & ! solid water flux from land to ocean
      discharge_snow_heat => NULL()     ! sensible heat of discharge_snow (0 C datum)
@@ -338,6 +339,7 @@ subroutine land_model_init (cplr2land, land2cplr, time_init, time, dt_fast, dt_s
   allocate(land2cplr%rough_heat    (is:ie,js:je,1))
   allocate(land2cplr%rough_scale   (is:ie,js:je,1))
   allocate(land2cplr%discharge     (is:ie,js:je))
+  allocate(land2cplr%discharge_DOC (is:ie,js:je))
   allocate(land2cplr%discharge_heat(is:ie,js:je))
   allocate(land2cplr%discharge_snow(is:ie,js:je))
   allocate(land2cplr%discharge_snow_heat(is:ie,js:je))
@@ -355,6 +357,7 @@ subroutine land_model_init (cplr2land, land2cplr, time_init, time, dt_fast, dt_s
   land2cplr%rough_heat        = 0.0
   land2cplr%rough_scale       = 1.0
   land2cplr%discharge         = 0.0
+  land2cplr%discharge_DOC     = 0.0
   land2cplr%discharge_heat    = 0.0
   land2cplr%discharge_snow    = 0.0
   land2cplr%discharge_snow_heat = 0.0
