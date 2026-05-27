@@ -351,8 +351,8 @@ subroutine land_model_init (cplr2land, land2cplr, time_init, time, dt_fast, dt_s
   land2cplr%albedo_nir_dir    = 0.0
   land2cplr%albedo_vis_dif    = 0.0
   land2cplr%albedo_nir_dif    = 0.0
-  land2cplr%rough_mom         = 0.0
-  land2cplr%rough_heat        = 0.0
+  land2cplr%rough_mom         = 1.0e-12
+  land2cplr%rough_heat        = 1.0e-12
   land2cplr%rough_scale       = 1.0
   land2cplr%discharge         = 0.0
   land2cplr%discharge_heat    = 0.0
